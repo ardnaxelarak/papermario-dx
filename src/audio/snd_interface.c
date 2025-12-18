@@ -880,7 +880,7 @@ void snd_set_mono(void) {
 }
 
 void snd_set_bgm_volume(VolumeLevels volume) {
-    au_set_bus_volume_level(AUDIO_TYPE_BGM, volume);
+    au_set_bus_volume_level(AUDIO_TYPE_BGM, 0);
 }
 
 void snd_set_sfx_volume(VolumeLevels volume) {

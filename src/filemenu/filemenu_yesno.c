@@ -277,6 +277,8 @@ void filemenu_yesno_handle_input(MenuPanel* menu) {
                     case FM_CONFIRM_CREATE:
                         clear_player_data();
                         clear_saved_variables();
+                        PlayerData* playerData = &gPlayerData;
+                        playerData->hammerLevel = 0;
                         get_map_IDs_by_name_checked(NEW_GAME_MAP_ID, &gGameStatusPtr->areaID, &gGameStatusPtr->mapID);
                         gGameStatusPtr->entryID = NEW_GAME_ENTRY_ID;
                         evt_set_variable(NULL, GB_StoryProgress, NEW_GAME_STORY_PROGRESS);

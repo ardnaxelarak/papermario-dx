@@ -1,7 +1,7 @@
 #include "mac_03.h"
 #include "effects.h"
 
-#define LIL_OINK_COIN_COST 10
+#define LIL_OINK_COIN_COST -1
 
 typedef struct LilOinkReward {
     /* 0x00 */ s32 itemID;
@@ -153,135 +153,6 @@ API_CALLABLE(N(PopLilOinkList)) {
     return ApiStatus_DONE2;
 }
 
-EvtScript N(EVS_TurnCrank) = {
-    Call(GetPartnerInUse, LVar0)
-    IfEq(LVar0, PARTNER_LAKILESTER)
-        Return
-    EndIf
-    Set(LVar0, 0)
-    Loop(3)
-        Call(RotateModel, MODEL_handle1, 3, -1, 0, 0)
-        Wait(1)
-        Call(RotateModel, MODEL_handle1, -3, -1, 0, 0)
-        Wait(1)
-    EndLoop
-    IfEq(MF_Unk_06, FALSE)
-        Return
-    EndIf
-    IfNe(GB_MAC03_LilOinkCapsuleState, 0)
-        Return
-    EndIf
-    Call(N(GetPlayerCoins))
-    IfLt(LVar0, LIL_OINK_COIN_COST)
-        Call(PlaySound, SOUND_MENU_ERROR)
-        Return
-    EndIf
-    Call(PlaySound, SOUND_FLOOR_SWITCH_ACTIVATE)
-    Call(DisablePlayerInput, TRUE)
-    SetGroup(EVT_GROUP_NEVER_PAUSE)
-    Call(SetTimeFreezeMode, TIME_FREEZE_PARTIAL)
-    Call(AddCoin, -LIL_OINK_COIN_COST)
-    Wait(20)
-    Call(N(DismissCoinCounter))
-    Set(MF_Unk_06, FALSE)
-    Call(UseSettingsFrom, CAM_DEFAULT, 138, 25, -406)
-    Call(SetPanTarget, CAM_DEFAULT, 138, 25, -406)
-    Call(SetCamPitch, CAM_DEFAULT, 15, -13)
-    Call(SetCamSpeed, CAM_DEFAULT, Float(90.0))
-    Call(PanToTarget, CAM_DEFAULT, 0, TRUE)
-    Call(WaitForCam, CAM_DEFAULT, Float(1.0))
-    Wait(10)
-    Thread
-        Call(PlaySoundAt, SOUND_TURN_MECHANISM, SOUND_SPACE_DEFAULT, 111, 89, -358)
-        Set(LVar0, 0)
-        Loop(5)
-            Add(LVar0, 6)
-            Call(RotateModel, MODEL_handle1, LVar0, 0, 0, -1)
-            Wait(1)
-        EndLoop
-        Loop(30)
-            Add(LVar0, 10)
-            Call(RotateModel, MODEL_handle1, LVar0, 0, 0, -1)
-            Wait(1)
-        EndLoop
-        Loop(5)
-            Add(LVar0, 6)
-            Call(RotateModel, MODEL_handle1, LVar0, 0, 0, -1)
-            Wait(1)
-        EndLoop
-    EndThread
-    SetF(LVar0, Float(1.0))
-    Loop(20)
-        AddF(LVar0, Float(0.2))
-        Call(ScaleModel, MODEL_boo, LVar0, LVar0, LVar0)
-        Wait(1)
-        SubF(LVar0, Float(0.2))
-        Call(ScaleModel, MODEL_boo, LVar0, LVar0, LVar0)
-        Wait(1)
-    EndLoop
-    SetF(LVar0, Float(1.0))
-    Loop(10)
-        SubF(LVar0, Float(0.04))
-        Call(ScaleModel, MODEL_boo, 1, LVar0, 1)
-        Wait(1)
-    EndLoop
-    Wait(20)
-    Loop(10)
-        AddF(LVar0, Float(0.08))
-        Call(ScaleModel, MODEL_boo, 1, LVar0, 1)
-        Wait(1)
-    EndLoop
-    Call(PlaySoundAt, SOUND_CAPSULE_OPEN, SOUND_SPACE_DEFAULT, 134, 132, -399)
-    Loop(5)
-        SubF(LVar0, Float(0.08))
-        Call(ScaleModel, MODEL_boo, 1, LVar0, 1)
-        Wait(1)
-    EndLoop
-    Call(PlaySoundAt, SOUND_EAT_OR_DRINK, SOUND_SPACE_DEFAULT, 170, 73, -450)
-    Set(GB_MAC03_LilOinkCapsuleState, 1)
-    Call(SetPanTarget, CAM_DEFAULT, 230, 20, -270)
-    Call(SetCamPitch, CAM_DEFAULT, 15, -6)
-    Call(SetCamSpeed, CAM_DEFAULT, Float(3.0))
-    Call(WaitForCam, CAM_DEFAULT, Float(1.0))
-    Call(EnableModel, MODEL_capsule, TRUE)
-    Call(MakeLerp, 0, 900, 30, EASING_LINEAR)
-    Loop(0)
-        Call(UpdateLerp)
-        SetF(LVar2, LVar0)
-        DivF(LVar2, 10)
-        Call(N(GetRollingCapsulePosition))
-        Call(SetNpcPos, NPC_Capsule, LVar2, LVar3, LVar4)
-        Wait(1)
-        IfEq(LVar1, 0)
-            BreakLoop
-        EndIf
-    EndLoop
-    Loop(10)
-        Add(LVar4, 5)
-        Call(SetNpcPos, NPC_Capsule, LVar2, LVar3, LVar4)
-        Wait(1)
-    EndLoop
-    Call(SetNpcJumpscale, NPC_Capsule, 1)
-    Call(NpcJump0, NPC_Capsule, LVar2, Float(63.0), -273, 5)
-    Call(PlaySoundAtNpc, NPC_Capsule, SOUND_EAT_OR_DRINK, SOUND_SPACE_DEFAULT)
-    Call(GetNpcPos, NPC_Capsule, LVar0, LVar1, LVar2)
-    Call(NpcJump0, NPC_Capsule, LVar0, LVar1, LVar2, 10)
-    Call(PlaySoundAtNpc, NPC_Capsule, SOUND_EAT_OR_DRINK, SOUND_SPACE_DEFAULT)
-    Call(NpcJump0, NPC_Capsule, LVar0, LVar1, LVar2, 5)
-    Call(PlaySoundAtNpc, NPC_Capsule, SOUND_EAT_OR_DRINK, SOUND_SPACE_DEFAULT)
-    Call(ModifyColliderFlags, MODIFY_COLLIDER_FLAGS_CLEAR_BITS, COLLIDER_capsule, COLLIDER_FLAGS_UPPER_MASK)
-    Wait(10)
-    Call(GetPlayerPos, LVar0, LVar1, LVar2)
-    Call(SetPanTarget, CAM_DEFAULT, LVar0, LVar1, LVar2)
-    Call(SetCamSpeed, CAM_DEFAULT, Float(90.0))
-    Call(WaitForCam, CAM_DEFAULT, Float(1.0))
-    Call(PanToTarget, CAM_DEFAULT, 0, FALSE)
-    Call(DisablePlayerInput, FALSE)
-    Call(SetTimeFreezeMode, TIME_FREEZE_NONE)
-    Return
-    End
-};
-
 EvtScript N(EVS_LilOinkExplanation) = {
     SetGroup(EVT_GROUP_NEVER_PAUSE)
     Call(SetNpcSpeed, NPC_Toad_03, Float(4.0))
@@ -387,10 +258,95 @@ EvtScript N(EVS_SpawnLilOinkPrize) = {
     End
 };
 
+EvtScript N(EVS_LilOinkFlee) = {
+    Set(LVar1, NPC_LilOink_01)
+    Add(LVar1, LVar0)
+    Call(EnableNpcAI, LVar1, FALSE)
+    Call(NpcFacePlayer, LVar1, 0)
+    Wait(10)
+    Call(GetNpcPos, LVar1, LVar2, LVar3, LVar4)
+    Call(NpcJump0, LVar1, LVar2, LVar3, LVar4, 10)
+    Call(PlaySoundAtNpc, LVar1, SOUND_PLAYER_RUN_AWAY, SOUND_SPACE_DEFAULT)
+    Call(SetNpcSpeed, LVar1, 8)
+    Call(NpcMoveTo, LVar1, 580, LVar4, 0)
+    Call(NpcJump0, LVar1, 620, 20, LVar4, 15)
+    Call(EnableNpcShadow, LVar1, FALSE)
+    Call(SetNpcSpeed, LVar1, 1)
+    Call(EnableNpcAI, LVar1, TRUE)
+    Call(N(HideLilOink), LVar0)
+    Sub(GB_MAC03_LilOinkCount, 1)
+    Return
+    End
+};
+
+EvtScript N(EVS_ClearPen) = {
+    /*
+    Call(DisablePlayerInput, TRUE)
+    Call(func_802D2C14, 1)
+    SetGroup(EVT_GROUP_00)
+    Call(SetTimeFreezeMode, TIME_FREEZE_PARTIAL)
+    Call(ModifyColliderFlags, MODIFY_COLLIDER_FLAGS_SET_BITS, COLLIDER_deili, COLLIDER_FLAGS_UPPER_MASK)
+    Call(PlaySoundAtCollider, COLLIDER_deili, SOUND_BASIC_DOOR_OPEN, SOUND_SPACE_DEFAULT)
+    Call(MakeLerp, 0, 80, 10, EASING_LINEAR)
+    Loop(0)
+        Call(UpdateLerp)
+        Call(RotateModel, MODEL_door, LVar0, 0, 1, 0)
+        Wait(1)
+        IfEq(LVar1, 0)
+            BreakLoop
+        EndIf
+    EndLoop
+    Call(PlayerMoveTo, 370, -208, 15)
+    Call(MakeLerp, 80, 0, 10, EASING_LINEAR)
+    Loop(0)
+        Call(UpdateLerp)
+        Call(RotateModel, MODEL_door, LVar0, 0, 1, 0)
+        Wait(1)
+        IfEq(LVar1, 0)
+            BreakLoop
+        EndIf
+    EndLoop
+    Call(PlaySoundAtCollider, COLLIDER_deili, SOUND_BASIC_DOOR_CLOSE, SOUND_SPACE_DEFAULT)
+    Call(ModifyColliderFlags, MODIFY_COLLIDER_FLAGS_CLEAR_BITS, COLLIDER_deili, COLLIDER_FLAGS_UPPER_MASK)
+    Call(SetTimeFreezeMode, TIME_FREEZE_NORMAL)
+    Call(func_802D2C14, 0)
+    Call(DisablePlayerInput, FALSE)
+    */
+    IfEq(GB_MAC03_LilOinkCount, 0)
+        Return
+    EndIf
+    Call(DisablePlayerInput, TRUE)
+    Call(SetTimeFreezeMode, TIME_FREEZE_PARTIAL)
+    Set(LVar0, GB_MAC03_LilOinkCount)
+    Set(LVar6, GB_MAC03_LilOinkCount)
+    Loop(LVar6)
+        Add(LVar0, -1)
+        Exec(N(EVS_LilOinkFlee))
+        Wait(5)
+    EndLoop
+    Loop(0)
+        IfEq(GB_MAC03_LilOinkCount, 0)
+            BreakLoop
+        EndIf
+        Wait(1)
+    EndLoop
+    Call(SetTimeFreezeMode, TIME_FREEZE_NONE)
+    Call(DisablePlayerInput, FALSE)
+
+    Call(GetPlayerPos, LVar0, LVar1, LVar2)
+    Call(SetPanTarget, CAM_DEFAULT, LVar0, LVar1, LVar2)
+    Call(SetCamSpeed, CAM_DEFAULT, Float(3.0))
+    Call(WaitForCam, CAM_DEFAULT, Float(1.0))
+    Call(PanToTarget, CAM_DEFAULT, 0, 0)
+
+    Return
+    End
+};
+
 EvtScript N(EVS_OpenCapsule) = {
     Call(N(GetFloorCollider), LVar0)
     IfNe(LVar0, COLLIDER_hummer)
-        Return
+        // Return
     EndIf
     Call(DisablePlayerInput, TRUE)
     SetGroup(EVT_GROUP_NEVER_PAUSE)
@@ -497,34 +453,152 @@ EvtScript N(EVS_OpenCapsule) = {
     Call(EnableNpcShadow, LVar5, TRUE)
     Call(N(CreateLilOink), GB_MAC03_LilOinkCount, LVar3, LVar0, LVar1, LVar2, LVar4)
     Add(GB_MAC03_LilOinkCount, 1)
-    Call(GetPlayerPos, LVar0, LVar1, LVar2)
-    Call(SetPanTarget, CAM_DEFAULT, LVar0, LVar1, LVar2)
-    Call(SetCamSpeed, CAM_DEFAULT, Float(3.0))
-    Call(WaitForCam, CAM_DEFAULT, Float(1.0))
-    Call(PanToTarget, CAM_DEFAULT, 0, FALSE)
+
+    IfGe(GB_MAC03_LilOinkCount, 10)
+        Exec(N(EVS_ClearPen))
+    Else
+        Call(GetPlayerPos, LVar0, LVar1, LVar2)
+        Call(SetPanTarget, CAM_DEFAULT, LVar0, LVar1, LVar2)
+        Call(SetCamSpeed, CAM_DEFAULT, Float(3.0))
+        Call(WaitForCam, CAM_DEFAULT, Float(1.0))
+        Call(PanToTarget, CAM_DEFAULT, 0, 0)
+    EndIf
+
     Call(DisablePlayerInput, FALSE)
     Call(SetTimeFreezeMode, TIME_FREEZE_NONE)
     Return
     End
 };
 
-EvtScript N(EVS_LilOinkFlee) = {
-    Set(LVar1, NPC_LilOink_01)
-    Add(LVar1, LVar0)
-    Call(EnableNpcAI, LVar1, FALSE)
-    Call(NpcFacePlayer, LVar1, 0)
+EvtScript N(EVS_TurnCrank) = {
+    Call(GetPartnerInUse, LVar0)
+    IfEq(LVar0, PARTNER_LAKILESTER)
+        Return
+    EndIf
+    Set(LVar0, 0)
+    Loop(3)
+        Call(RotateModel, MODEL_handle1, 3, -1, 0, 0)
+        Wait(1)
+        Call(RotateModel, MODEL_handle1, -3, -1, 0, 0)
+        Wait(1)
+    EndLoop
+    IfEq(MF_Unk_06, FALSE)
+        Return
+    EndIf
+    IfNe(GB_MAC03_LilOinkCapsuleState, 0)
+        Return
+    EndIf
+    Call(N(GetPlayerCoins))
+    IfLt(LVar0, LIL_OINK_COIN_COST)
+        Call(PlaySound, SOUND_MENU_ERROR)
+        Return
+    EndIf
+    Call(PlaySound, SOUND_FLOOR_SWITCH_ACTIVATE)
+    Call(ShowCoinCounter, TRUE)
+    Call(DisablePlayerInput, TRUE)
+    SetGroup(EVT_GROUP_NEVER_PAUSE)
+    Call(SetTimeFreezeMode, TIME_FREEZE_PARTIAL)
+    Call(AddCoin, -LIL_OINK_COIN_COST)
+    Wait(20)
+    Set(MF_Unk_06, FALSE)
+    Call(UseSettingsFrom, CAM_DEFAULT, 138, 25, -406)
+    Call(SetPanTarget, CAM_DEFAULT, 138, 25, -406)
+    Call(SetCamPitch, CAM_DEFAULT, 15, -13)
+    Call(SetCamSpeed, CAM_DEFAULT, Float(90.0))
+    Call(PanToTarget, CAM_DEFAULT, 0, TRUE)
+    Call(WaitForCam, CAM_DEFAULT, Float(1.0))
     Wait(10)
-    Call(GetNpcPos, LVar1, LVar2, LVar3, LVar4)
-    Call(NpcJump0, LVar1, LVar2, LVar3, LVar4, 10)
-    Call(PlaySoundAtNpc, LVar1, SOUND_PLAYER_RUN_AWAY, SOUND_SPACE_DEFAULT)
-    Call(SetNpcSpeed, LVar1, 8)
-    Call(NpcMoveTo, LVar1, 580, LVar4, 0)
-    Call(NpcJump0, LVar1, 620, 20, LVar4, 15)
-    Call(EnableNpcShadow, LVar1, FALSE)
-    Call(SetNpcSpeed, LVar1, 1)
-    Call(EnableNpcAI, LVar1, TRUE)
-    Call(N(HideLilOink), LVar0)
-    Sub(GB_MAC03_LilOinkCount, 1)
+    Thread
+        Call(PlaySoundAt, SOUND_TURN_MECHANISM, SOUND_SPACE_DEFAULT, 111, 89, -358)
+        Set(LVar0, 0)
+        Loop(5)
+            Add(LVar0, 6)
+            Call(RotateModel, MODEL_handle1, LVar0, 0, 0, -1)
+            Wait(1)
+        EndLoop
+        Loop(30)
+            Add(LVar0, 10)
+            Call(RotateModel, MODEL_handle1, LVar0, 0, 0, -1)
+            Wait(1)
+        EndLoop
+        Loop(5)
+            Add(LVar0, 6)
+            Call(RotateModel, MODEL_handle1, LVar0, 0, 0, -1)
+            Wait(1)
+        EndLoop
+    EndThread
+    SetF(LVar0, Float(1.0))
+    Loop(20)
+        AddF(LVar0, Float(0.2))
+        Call(ScaleModel, MODEL_boo, LVar0, LVar0, LVar0)
+        Wait(1)
+        SubF(LVar0, Float(0.2))
+        Call(ScaleModel, MODEL_boo, LVar0, LVar0, LVar0)
+        Wait(1)
+    EndLoop
+    SetF(LVar0, Float(1.0))
+    Loop(10)
+        SubF(LVar0, Float(0.04))
+        Call(ScaleModel, MODEL_boo, 1, LVar0, 1)
+        Wait(1)
+    EndLoop
+    Wait(20)
+    Loop(10)
+        AddF(LVar0, Float(0.08))
+        Call(ScaleModel, MODEL_boo, 1, LVar0, 1)
+        Wait(1)
+    EndLoop
+    Call(PlaySoundAt, SOUND_CAPSULE_OPEN, SOUND_SPACE_DEFAULT, 134, 132, -399)
+    Loop(5)
+        SubF(LVar0, Float(0.08))
+        Call(ScaleModel, MODEL_boo, 1, LVar0, 1)
+        Wait(1)
+    EndLoop
+    Call(PlaySoundAt, SOUND_EAT_OR_DRINK, SOUND_SPACE_DEFAULT, 170, 73, -450)
+    Set(GB_MAC03_LilOinkCapsuleState, 1)
+    Call(SetPanTarget, CAM_DEFAULT, 230, 20, -270)
+    Call(SetCamPitch, CAM_DEFAULT, 15, -6)
+    Call(SetCamSpeed, CAM_DEFAULT, Float(3.0))
+    Call(WaitForCam, CAM_DEFAULT, Float(1.0))
+    Call(EnableModel, MODEL_capsule, TRUE)
+    Call(MakeLerp, 0, 900, 30, EASING_LINEAR)
+    Loop(0)
+        Call(UpdateLerp)
+        SetF(LVar2, LVar0)
+        DivF(LVar2, 10)
+        Call(N(GetRollingCapsulePosition))
+        Call(SetNpcPos, NPC_Capsule, LVar2, LVar3, LVar4)
+        Wait(1)
+        IfEq(LVar1, 0)
+            BreakLoop
+        EndIf
+    EndLoop
+    Loop(10)
+        Add(LVar4, 5)
+        Call(SetNpcPos, NPC_Capsule, LVar2, LVar3, LVar4)
+        Wait(1)
+    EndLoop
+    Call(SetNpcJumpscale, NPC_Capsule, 1)
+    Call(NpcJump0, NPC_Capsule, LVar2, Float(63.0), -273, 5)
+    Call(PlaySoundAtNpc, NPC_Capsule, SOUND_EAT_OR_DRINK, SOUND_SPACE_DEFAULT)
+    Call(GetNpcPos, NPC_Capsule, LVar0, LVar1, LVar2)
+    Call(NpcJump0, NPC_Capsule, LVar0, LVar1, LVar2, 10)
+    Call(PlaySoundAtNpc, NPC_Capsule, SOUND_EAT_OR_DRINK, SOUND_SPACE_DEFAULT)
+    Call(NpcJump0, NPC_Capsule, LVar0, LVar1, LVar2, 5)
+    Call(PlaySoundAtNpc, NPC_Capsule, SOUND_EAT_OR_DRINK, SOUND_SPACE_DEFAULT)
+    Call(ModifyColliderFlags, MODIFY_COLLIDER_FLAGS_CLEAR_BITS, COLLIDER_capsule, COLLIDER_FLAGS_UPPER_MASK)
+    Wait(10)
+    Exec(N(EVS_OpenCapsule))
+    Set(MF_Unk_06, TRUE)
+
+    // Call(GetPlayerPos, LVar0, LVar1, LVar2)
+    // Call(SetPanTarget, CAM_DEFAULT, LVar0, LVar1, LVar2)
+    // Call(SetCamSpeed, CAM_DEFAULT, Float(90.0))
+    // Call(WaitForCam, CAM_DEFAULT, Float(1.0))
+    // Call(PanToTarget, CAM_DEFAULT, 0, FALSE)
+    Call(DisablePlayerInput, FALSE)
+    Call(SetTimeFreezeMode, TIME_FREEZE_NONE)
+    Call(N(DismissCoinCounter))
     Return
     End
 };
@@ -644,7 +718,7 @@ EvtScript N(EVS_InitializeLilOinks) = {
         Call(EnableModel, MODEL_capsule, FALSE)
         Call(ModifyColliderFlags, MODIFY_COLLIDER_FLAGS_SET_BITS, COLLIDER_capsule, COLLIDER_FLAGS_UPPER_MASK)
     EndIf
-    Set(MF_Unk_06, FALSE)
+    Set(MF_Unk_06, TRUE)
     Set(MF_Unk_07, FALSE)
     IfEq(GB_MAC03_LilOinkCount, 0)
         Set(MF_Unk_08, FALSE)
@@ -665,7 +739,7 @@ EvtScript N(EVS_InitializeLilOinks) = {
         EndLoop
     EndIf
     Exec(N(EVS_SyncLilOinkNpcPositions))
-    BindTrigger(Ref(N(EVS_UseMachinePrompt)), TRIGGER_FLOOR_TOUCH, COLLIDER_step, 1, 0)
+    // BindTrigger(Ref(N(EVS_UseMachinePrompt)), TRIGGER_FLOOR_TOUCH, COLLIDER_step, 1, 0)
     BindTrigger(Ref(N(EVS_TurnCrank)), TRIGGER_CEILING_TOUCH, COLLIDER_jump, 1, 0)
     BindTrigger(Ref(N(EVS_OpenCapsule)), TRIGGER_WALL_HAMMER, COLLIDER_capsule, 1, 0)
     BindTrigger(Ref(N(EVS_EnterPen)), TRIGGER_WALL_PRESS_A, COLLIDER_deili, 1, 0)

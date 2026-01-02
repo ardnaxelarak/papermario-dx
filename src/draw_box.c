@@ -63,7 +63,7 @@ DefaultWindowStyle gBoxDefaultStyles[] = {
         .cornersIndex = 6,
         .combineModeIndex = 1,
         .color1 = { .r = 235, .g = 230, .b = 119, .a = 255 },
-        .color2 = { .r = 142, .g = 99, .b = 37, .a = 255 }
+        .color2 = { .r = 142, .g = 90, .b = 37, .a = 255 }
     },
     {
         .bgIndex = 1,

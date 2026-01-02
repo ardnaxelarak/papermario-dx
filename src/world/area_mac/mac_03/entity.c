@@ -17,8 +17,8 @@ EvtScript N(EVS_OnBlast_RailRock) = {
 
 EvtScript N(EVS_ReadSign_LilOinks) = {
     Call(DisablePlayerInput, TRUE)
-    Call(ShowMessageAtScreenPos, MSG_MAC_Station_0068, 160, 40)
-    Call(ShowChoice, MSG_MAC_Station_0069)
+    Call(ShowMessageAtScreenPos, MSG_Oinks_Multihatch, 160, 40)
+    Call(ShowChoice, MSG_Oinks_Multihatch_Choice)
     Call(DisablePlayerInput, FALSE)
     Call(EndSpeech)
     Switch(LVar0)

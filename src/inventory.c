@@ -627,12 +627,14 @@ void status_bar_draw_number(s32 iconID, s32 startX, s32 startY, s32 value, s32 n
     s32 digit;
     s32 i;
 
-    hud_element_set_script(iconID, TimesHudScript);
     drawX = startX + 8;
     drawY = startY + 8;
-    hud_element_set_render_pos(iconID, drawX, drawY - 1);
-    hud_element_clear_flags(iconID, HUD_ELEMENT_FLAG_DISABLED);
-    hud_element_draw_next(iconID);
+    if (iconID > 0) {
+        hud_element_set_script(iconID, TimesHudScript);
+        hud_element_set_render_pos(iconID, drawX, drawY - 1);
+        hud_element_clear_flags(iconID, HUD_ELEMENT_FLAG_DISABLED);
+        hud_element_draw_next(iconID);
+    }
 
     // Write each digit of the input number into the digits array
     for (i = 0; i < numDigits; i++) {
@@ -898,8 +900,8 @@ void update_status_bar(void) {
     gDPSetScissor(gMainGfxPos++, G_SC_NON_INTERLACE, SCREEN_XMIN, SCREEN_YMIN, SCREEN_XMAX, SCREEN_YMAX);
     x = statusBar->drawPosX;
     y = statusBar->drawPosY;
-    draw_box(0, WINDOW_STYLE_5, x,       y, 0, 174, 35, 255, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, NULL, NULL, NULL, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
-    draw_box(0, WINDOW_STYLE_6, x + 174, y, 0, 122, 25, 255, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, NULL, NULL, NULL, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+    draw_box(0, WINDOW_STYLE_5, x + 194, y, 0, 65, 31, 255, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, NULL, NULL, NULL, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
+    draw_box(0, WINDOW_STYLE_6, x + 258, y, 0, 40, 21, 255, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, NULL, NULL, NULL, SCREEN_WIDTH, SCREEN_HEIGHT, NULL);
 
     if (statusBar->hpBlinkTimeLeft > 0) {
         statusBar->hpBlinkTimeLeft--;
@@ -920,7 +922,7 @@ void update_status_bar(void) {
         statusBar->hpBlinkAnimTime++;
     }
 
-    if (showStat) {
+    if (FALSE && showStat) {
         id = statusBar->hpIconHIDs[0];
         x = statusBar->drawPosX + 22;
         y = statusBar->drawPosY + 13;
@@ -957,9 +959,9 @@ void update_status_bar(void) {
         statusBar->fpBlinkAnimTime++;
     }
 
-    if (showStat) {
+    if (FALSE && showStat) {
         id = statusBar->fpIconHIDs[0];
-        x = statusBar->drawPosX + 110;
+        x = statusBar->drawPosX + 113;
         y = statusBar->drawPosY + 13;
         hud_element_set_render_pos(id, x, y);
         hud_element_draw_next(id);
@@ -993,19 +995,19 @@ void update_status_bar(void) {
 
     if (showStat) {
         id = statusBar->spIconHID;
-        x = statusBar->drawPosX + 195;
-        y = statusBar->drawPosY + 14;
+        x = statusBar->drawPosX + 210;
+        y = statusBar->drawPosY + 17;
         hud_element_set_render_pos(id, x, y);
         hud_element_draw_next(id);
 
         id = statusBar->spShineHID;
-        x = statusBar->drawPosX + 195;
-        y = statusBar->drawPosY + 9;
+        x = statusBar->drawPosX + 210;
+        y = statusBar->drawPosY + 11;
         hud_element_set_render_pos(id, x, y);
         hud_element_draw_next(id);
 
-        x = statusBar->drawPosX + 200;
-        y = statusBar->drawPosY + 8;
+        x = statusBar->drawPosX + 215;
+        y = statusBar->drawPosY + 9;
         status_bar_draw_number(statusBar->spTimesHID, x, y, playerData->starPoints, 2);
     }
 
@@ -1029,21 +1031,21 @@ void update_status_bar(void) {
     }
 
     if (showStat) {
-        id = statusBar->coinIconHID;
-        x = statusBar->drawPosX + 244;
-        y = statusBar->drawPosY + 14;
-        hud_element_set_render_pos(id, x, y);
-        hud_element_draw_next(id);
+        // id = statusBar->coinIconHID;
+        // x = statusBar->drawPosX + 244;
+        // y = statusBar->drawPosY + 14;
+        // hud_element_set_render_pos(id, x, y);
+        // hud_element_draw_next(id);
 
-        id = statusBar->coinSparkleHID;
-        x = statusBar->drawPosX + 244;
-        y = statusBar->drawPosY + 14;
-        hud_element_set_render_pos(id, x, y);
-        hud_element_draw_next(id);
+        // id = statusBar->coinSparkleHID;
+        // x = statusBar->drawPosX + 244;
+        // y = statusBar->drawPosY + 14;
+        // hud_element_set_render_pos(id, x, y);
+        // hud_element_draw_next(id);
 
-        x = statusBar->drawPosX + 247;
-        y = statusBar->drawPosY + 8;
-        status_bar_draw_number(statusBar->coinTimesHID, x, y, statusBar->displayCoins, 3);
+        x = statusBar->drawPosX + 240;
+        y = statusBar->drawPosY + 4;
+        status_bar_draw_number(0, x, y, statusBar->displayCoins, 5);
     }
 
     id = statusBar->starIconHID;
@@ -1306,7 +1308,7 @@ void coin_counter_draw_content(UNK_TYPE arg0, s32 posX, s32 posY) {
     // hud_element_set_render_pos(iconIndex, posX + 15, posY + 11);
     // hud_element_draw_clipped(iconIndex);
 
-    draw_number(statusBar->displayCoins, posX + 58, posY + 4, DRAW_NUMBER_CHARSET_THIN, MSG_PAL_STANDARD, 255, DRAW_NUMBER_STYLE_MONOSPACE | DRAW_NUMBER_STYLE_ALIGN_RIGHT);
+    draw_number(statusBar->displayCoins, posX + 61, posY + 4, DRAW_NUMBER_CHARSET_THIN, MSG_PAL_STANDARD, 255, DRAW_NUMBER_STYLE_MONOSPACE | DRAW_NUMBER_STYLE_ALIGN_RIGHT);
     if (pendingHatches > 0) {
       iconIndex = statusBar->coinCountTimesHID;
       hud_element_set_render_pos(iconIndex, posX + 6, posY + 11);

@@ -10,7 +10,6 @@ typedef struct LilOinkReward {
     /* 0x08 */ s32 chance;
 } LilOinkReward; // size = 0x0C
 
-u32 oinkHatcher = 0;
 u32 pendingHatches = 0;
 u32 oinksBusy = 0;
 
@@ -420,9 +419,27 @@ EvtScript N(EVS_OpenCapsule) = {
     Call(PanToTarget, CAM_DEFAULT, 0, TRUE)
     Call(WaitForCam, CAM_DEFAULT, Float(1.0))
 
-    IfEq(LVar3, LIL_OINK_TYPE_GOLD)
-        Call(PlaySound, SOUND_LUCKY)
-    EndIf
+    Switch(LVar3)
+        CaseEq(LIL_OINK_TYPE_GOLD)
+            Call(AddStarPoints, 1)
+            Call(PlaySound, SOUND_LUCKY)
+        CaseEq(LIL_OINK_TYPE_SILVER)
+            Call(PlaySound, SOUND_POWER_UP)
+        CaseEq(LIL_OINK_TYPE_SHROOM)
+            Call(PlaySound, SOUND_ENTER_PIPE)
+        CaseEq(LIL_OINK_TYPE_FLOWER)
+            Call(PlaySound, SOUND_FIRE_FLOWER_A)
+        CaseEq(LIL_OINK_TYPE_STAR)
+            Call(PlaySound, SOUND_SHOOTING_STAR_FALL_A)
+        CaseEq(LIL_OINK_TYPE_QUESTION)
+            Call(PlaySound, SOUND_QUIZ_NEXT_QUESTION)
+        CaseEq(LIL_OINK_TYPE_BLACK)
+        CaseEq(LIL_OINK_TYPE_WHITE)
+        CaseEq(LIL_OINK_TYPE_PINK)
+        CaseEq(LIL_OINK_TYPE_PIKACHU)
+            Call(PlaySound, SOUND_AUDIENCE_CHEER)
+        CaseDefault
+    EndSwitch
 
     Wait(10)
 
@@ -444,7 +461,7 @@ EvtScript N(EVS_OpenCapsule) = {
     Add(GB_MAC03_LilOinkCount, 1)
 
     IfEq(LVar3, LIL_OINK_TYPE_GOLD)
-        Call(ShowMessageAtScreenPos, MSG_MAC_Station_0067, 40, 40)
+        Call(ShowMessageAtScreenPos, MSG_Oinks_Gold, 40, 40)
         Wait(10)
     EndIf
 

@@ -31,6 +31,7 @@ options:
 vram_classes:
   # Main
   - { name: main, vram: 0x80025C00 }
+  - { name: fixed, vram: 0x80100000 }
   - { name: engine1, vram: 0x800DC500, vram_symbol: overlays_start } # follows_classes: [main] (hard-coded in undefined_syms since BG data / map data doesn't shift currently)
   - { name: engine2, vram: 0x8010F6D0, vram_symbol: engine1_VRAM_END }
   - { name: heaps, vram: 0x80197000, vram_symbol: engine2_VRAM_END }
@@ -8102,6 +8103,12 @@ segments:
 ############
 ### maps ###
 ############
+  - name: fixed
+    type: code
+    start: auto
+    vram_class: fixed
+    subsegments:
+    - [auto, c, fixed]
   - name: machi
     dir: world/area_mac/machi
     type: code
@@ -14730,6 +14737,7 @@ segments:
       - 2C_QuizQuestions
       - 2D_QuizChoices
       - 2E_Credits
+      - Oinks
   - [0x1C84D30, bin, unk_1C84D30] # junk(?)
   - [0x1E00000, bin, copy_1E00000] # copy of 0x1943000 - 0x1983000
   - [0x1E40000, pm_map_data, mapfs]

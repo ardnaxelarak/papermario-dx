@@ -113,6 +113,7 @@ extern PlayerStatus gPlayerStatus;
 extern PlayerSpinState gPlayerSpinState;
 extern PlayerData gPlayerData;
 
+extern u32 oinkHatcher;
 extern u32 pendingHatches;
 
 #if VERSION_PAL

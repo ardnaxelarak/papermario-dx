@@ -1326,7 +1326,7 @@ void update_coin_counter(void) {
         statusBar->coinCountDisposeTime--;
         if ((statusBar->coinCountDisposeTime == 0) && (statusBar->iconIndex12 > -1)) {
             hud_element_free(statusBar->iconIndex12);
-            hud_element_free(statusBar->iconIndex13);
+            // hud_element_free(statusBar->iconIndex13);
             statusBar->iconIndex12 = -1;
         }
         HidingCoinCounter = FALSE;
@@ -1351,7 +1351,7 @@ void update_coin_counter(void) {
         ShowingCoinCounter = FALSE;
         HidingCoinCounter = TRUE;
         statusBar->iconIndex12 = statusBar->coinCountTimesHID;
-        statusBar->iconIndex13 = statusBar->coinCountIconHID;
+        // statusBar->iconIndex13 = statusBar->coinCountIconHID;
         statusBar->displayCoins = gPlayerData.coins;
         if (statusBar->prevIgnoreChanges > -1) {
             statusBar->ignoreChanges = statusBar->prevIgnoreChanges;
@@ -1367,9 +1367,9 @@ void show_coin_counter(void) {
     // if a coin counter is already visible, dispose of previous counter and reset state
     if (ShowingCoinCounter || HidingCoinCounter) {
         set_window_update(WIN_CURRENCY_COUNTER, WINDOW_UPDATE_HIDE);
-        if (statusBar->iconIndex12 > -1) {
+        if (statusBar->coinCountTimesHID > -1) {
             hud_element_free(statusBar->coinCountTimesHID);
-            hud_element_free(statusBar->coinCountIconHID);
+            // hud_element_free(statusBar->coinCountIconHID);
             statusBar->iconIndex12 = -1;
         }
         statusBar->coinCounterHideDelay = 0;
@@ -1384,9 +1384,9 @@ void show_coin_counter(void) {
         statusBar->coinCountTimesHID = hid = hud_element_create(&HES_MenuTimes);
         hud_element_set_flags(hid, HUD_ELEMENT_FLAG_MANUAL_RENDER);
         hud_element_set_tint(hid, 255, 255, 255);
-        statusBar->coinCountIconHID = hid = hud_element_create(&HES_StatusCoin);
-        hud_element_set_flags(hid, HUD_ELEMENT_FLAG_MANUAL_RENDER);
-        hud_element_set_tint(hid, 255, 255, 255);
+        // statusBar->coinCountIconHID = hid = hud_element_create(&HES_StatusCoin);
+        // hud_element_set_flags(hid, HUD_ELEMENT_FLAG_MANUAL_RENDER);
+        // hud_element_set_tint(hid, 255, 255, 255);
         statusBar->coinCounterHideDelay = 0;
 
         if (statusBar->prevIgnoreChanges < 0) {
@@ -2083,8 +2083,8 @@ s32 add_coins(s32 amt) {
     s16 newCoins = playerData->coins + amt;
 
     playerData->coins = newCoins;
-    if (newCoins > 999) {
-        playerData->coins = 999;
+    if (newCoins > 9999) {
+        playerData->coins = 9999;
     }
     if (playerData->coins < 0) {
         playerData->coins = 0;
@@ -2105,8 +2105,8 @@ s32 add_star_points(s32 amt) {
 
     // TODO: probably a macro!
     playerData->starPoints = newSP;
-    if (newSP > 100) {
-        playerData->starPoints = 100;
+    if (newSP > 99) {
+        playerData->starPoints = 99;
     }
 
     // TODO: probably a macro!

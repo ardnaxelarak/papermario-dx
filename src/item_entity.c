@@ -1986,8 +1986,8 @@ void update_item_entity_collectable(ItemEntity* item) {
                     break;
                 case ITEM_COIN:
                     playerData->coins++;
-                    if (playerData->coins > 999) {
-                        playerData->coins = 999;
+                    if (playerData->coins > 9999) {
+                        playerData->coins = 9999;
                     }
                     sfx_play_sound_at_position(SOUND_COIN_PICKUP, SOUND_SPACE_DEFAULT, item->pos.x, item->pos.y, item->pos.z);
                     playerData->totalCoinsEarned++;
@@ -2000,8 +2000,8 @@ void update_item_entity_collectable(ItemEntity* item) {
                     break;
                 case ITEM_STAR_POINT:
                     playerData->starPoints++;
-                    if (playerData->starPoints > 100) {
-                        playerData->starPoints = 100;
+                    if (playerData->starPoints > 99) {
+                        playerData->starPoints = 99;
                     }
                     sfx_play_sound_at_position(SOUND_COIN_PICKUP, SOUND_SPACE_DEFAULT, item->pos.x, item->pos.y, item->pos.z);
                     break;

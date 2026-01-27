@@ -1815,6 +1815,10 @@ void hud_element_draw_complex_battle_next(s32 hid) {
 
 void draw_hud_element_internal(s32 id, s32 clipMode) {
     HudElement* elem = (*gHudElements)[id & ~HUD_ELEMENT_BATTLE_ID_MASK];
+    if (!elem) {
+        return;
+    }
+
     s32 texSizeX, texSizeY;
     s32 drawSizeX, drawSizeY;
     s32 offsetX, offsetY;
@@ -1971,6 +1975,10 @@ void hud_element_free(s32 id) {
 
 void hud_element_set_render_pos(s32 id, s32 x, s32 y) {
     HudElement* hudElement = (*gHudElements)[id & ~HUD_ELEMENT_BATTLE_ID_MASK];
+
+    if (!hudElement) {
+        return;
+    }
 
     hudElement->renderPosX = x;
     hudElement->renderPosY = y;

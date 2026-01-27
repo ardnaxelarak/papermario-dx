@@ -6,6 +6,14 @@
 	[SetPosX 35]It glows like a treasure![DelayOn][Wait][End]
 }
 
+#message:05:(Oinks_Paused) {
+	[Style sign]
+	[DelayOff]
+	[Down 2][SetPosX 48]You have suspended[BR]
+	[Down 2][SetPosX 12]the hatching of the Lil-Oinks...[BR]
+	[Down 2][SetPosX 48]To resume, press [Z][BR][DelayOn][Wait][End]
+}
+
 #message:05:(Oinks_Multihatch) {
 	[Style sign]
 	[DelayOff]

@@ -629,7 +629,8 @@ void status_bar_draw_number(s32 iconID, s32 startX, s32 startY, s32 value, s32 n
 
     drawX = startX + 8;
     drawY = startY + 8;
-    if (iconID > 0) {
+
+    if (iconID) {
         hud_element_set_script(iconID, TimesHudScript);
         hud_element_set_render_pos(iconID, drawX, drawY - 1);
         hud_element_clear_flags(iconID, HUD_ELEMENT_FLAG_DISABLED);

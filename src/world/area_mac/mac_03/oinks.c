@@ -1,6 +1,8 @@
 #include "mac_03.h"
 #include "effects.h"
 #include "variables.h"
+#include "common_structs.h"
+#include "enums.h"
 
 #define LIL_OINK_COIN_COST -1
 
@@ -11,7 +13,8 @@ typedef struct LilOinkReward {
 } LilOinkReward; // size = 0x0C
 
 u32 pendingHatches = 0;
-u32 oinksBusy = 0;
+u8 oinksBusy = 0;
+u8 oinksPaused = 0;
 
 #include "world/common/todo/GetFloorCollider.inc.c"
 #include "world/common/todo/GetPlayerCoins.inc.c"
@@ -23,11 +26,40 @@ API_CALLABLE(N(SetOinksBusy)) {
     return ApiStatus_DONE2;
 }
 
+API_CALLABLE(N(CheckInputs)) {
+    u32 pressedButtons = gGameStatusPtr->pressedButtons[0];
+    StatusBar* statusBar = &gStatusBar;
+
+    if (pressedButtons & BUTTON_C_DOWN) {
+        show_coin_counter();
+        statusBar->coinCounterHideDelay = 60;
+        pendingHatches++;
+    }
+
+    if (pressedButtons & BUTTON_Z) {
+        if (oinksPaused) {
+            hide_coin_counter();
+            oinksPaused = 0;
+        } else {
+            show_coin_counter();
+            statusBar->coinCounterHideDelay = 60;
+            oinksPaused = 1;
+        }
+    }
+
+    return ApiStatus_DONE2;
+}
+
 API_CALLABLE(N(CheckOinkStatus)) {
     pendingHatches += oinkHatcher;
     oinkHatcher = 0;
 
-    if (oinksBusy == 0 && pendingHatches > 0) {
+    if (oinksBusy || oinksPaused || gPlayerStatus.flags & PS_FLAG_INPUT_DISABLED) {
+        script->varTable[0] = 0;
+        return ApiStatus_DONE2;
+    }
+
+    if (pendingHatches > 0) {
         script->varTable[0] = pendingHatches;
         pendingHatches--;
     } else {
@@ -424,20 +456,20 @@ EvtScript N(EVS_OpenCapsule) = {
             Call(AddStarPoints, 1)
             Call(PlaySound, SOUND_LUCKY)
         CaseEq(LIL_OINK_TYPE_SILVER)
-            Call(PlaySound, SOUND_POWER_UP)
+            // Call(PlaySound, SOUND_POWER_UP)
         CaseEq(LIL_OINK_TYPE_SHROOM)
-            Call(PlaySound, SOUND_ENTER_PIPE)
+            // Call(PlaySound, SOUND_ENTER_PIPE)
         CaseEq(LIL_OINK_TYPE_FLOWER)
-            Call(PlaySound, SOUND_FIRE_FLOWER_A)
+            // Call(PlaySound, SOUND_FIRE_FLOWER_A)
         CaseEq(LIL_OINK_TYPE_STAR)
-            Call(PlaySound, SOUND_SHOOTING_STAR_FALL_A)
+            // Call(PlaySound, SOUND_SHOOTING_STAR_FALL_A)
         CaseEq(LIL_OINK_TYPE_QUESTION)
-            Call(PlaySound, SOUND_QUIZ_NEXT_QUESTION)
+            // Call(PlaySound, SOUND_QUIZ_NEXT_QUESTION)
         CaseEq(LIL_OINK_TYPE_BLACK)
         CaseEq(LIL_OINK_TYPE_WHITE)
         CaseEq(LIL_OINK_TYPE_PINK)
         CaseEq(LIL_OINK_TYPE_PIKACHU)
-            Call(PlaySound, SOUND_AUDIENCE_CHEER)
+            // Call(PlaySound, SOUND_AUDIENCE_CHEER)
         CaseDefault
     EndSwitch
 
@@ -731,14 +763,23 @@ EvtScript N(EVS_SyncLilOinkNpcPositions) = {
     End
 };
 
+EvtScript N(EVS_InputDemon) = {
+    Loop(0)
+        Call(N(CheckInputs))
+        Wait(1)
+    EndLoop
+    Return
+    End
+};
+
 EvtScript N(EVS_OinkDemon) = {
     Set(LVar0, 0)
     Loop(0)
         Call(N(CheckOinkStatus))
-        IfNe(LVar0, 0)
+        IfGt(LVar0, 0)
             Exec(N(EVS_TurnCrank))
         EndIf
-        Wait(10)
+        Wait(3)
     EndLoop
     Return
     End
@@ -773,6 +814,7 @@ EvtScript N(EVS_InitializeLilOinks) = {
     EndIf
     Exec(N(EVS_SyncLilOinkNpcPositions))
     Exec(N(EVS_OinkDemon))
+    Exec(N(EVS_InputDemon))
     // BindTrigger(Ref(N(EVS_UseMachinePrompt)), TRIGGER_FLOOR_TOUCH, COLLIDER_step, 1, 0)
     BindTrigger(Ref(N(EVS_TurnCrank)), TRIGGER_CEILING_TOUCH, COLLIDER_jump, 1, 0)
     BindTrigger(Ref(N(EVS_OpenCapsule)), TRIGGER_WALL_HAMMER, COLLIDER_capsule, 1, 0)

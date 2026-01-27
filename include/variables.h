@@ -115,6 +115,7 @@ extern PlayerData gPlayerData;
 
 extern u32 oinkHatcher;
 extern u32 pendingHatches;
+extern u8 oinksPaused;
 
 #if VERSION_PAL
 extern s32 gCurrentLanguage;

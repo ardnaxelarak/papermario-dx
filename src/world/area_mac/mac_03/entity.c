@@ -9,6 +9,12 @@ API_CALLABLE(N(AddOinkHatches)) {
     return ApiStatus_DONE2;
 }
 
+API_CALLABLE(N(CheckIfPaused)) {
+    script->varTable[0] = oinksPaused;
+
+    return ApiStatus_DONE2;
+}
+
 EvtScript N(EVS_OnBlast_RailRock) = {
     Set(GF_MAC03_BombedRock, TRUE)
     Return
@@ -17,20 +23,28 @@ EvtScript N(EVS_OnBlast_RailRock) = {
 
 EvtScript N(EVS_ReadSign_LilOinks) = {
     Call(DisablePlayerInput, TRUE)
-    Call(ShowMessageAtScreenPos, MSG_Oinks_Multihatch, 160, 40)
-    Call(ShowChoice, MSG_Oinks_Multihatch_Choice)
-    Call(DisablePlayerInput, FALSE)
-    Call(EndSpeech)
-    Switch(LVar0)
-        CaseEq(0)
-            Call(N(AddOinkHatches), 5)
-        CaseEq(1)
-            Call(N(AddOinkHatches), 10)
-        CaseEq(2)
-            Call(N(AddOinkHatches), 20)
-        CaseEq(3)
-            Call(N(AddOinkHatches), 50)
-    EndSwitch
+    Call(N(CheckIfPaused))
+    IfNe(LVar0, 0)
+        Call(ShowCoinCounter, TRUE)
+        Call(ShowMessageAtScreenPos, MSG_Oinks_Paused, 160, 40)
+        Call(ShowCoinCounter, FALSE)
+        Call(DisablePlayerInput, FALSE)
+    Else
+        Call(ShowMessageAtScreenPos, MSG_Oinks_Multihatch, 160, 40)
+        Call(ShowChoice, MSG_Oinks_Multihatch_Choice)
+        Call(DisablePlayerInput, FALSE)
+        Call(EndSpeech)
+        Switch(LVar0)
+            CaseEq(0)
+                Call(N(AddOinkHatches), 5)
+            CaseEq(1)
+                Call(N(AddOinkHatches), 10)
+            CaseEq(2)
+                Call(N(AddOinkHatches), 20)
+            CaseEq(3)
+                Call(N(AddOinkHatches), 50)
+        EndSwitch
+    EndIf
     Return
     End
 };

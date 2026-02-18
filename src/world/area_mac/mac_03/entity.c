@@ -16,23 +16,23 @@ API_CALLABLE(N(CheckIfPaused)) {
 }
 
 EvtScript N(EVS_OnBlast_RailRock) = {
-    Set(GF_MAC03_BombedRock, TRUE)
+    Set(GF_MAC03_BombedRock, true)
     Return
     End
 };
 
 EvtScript N(EVS_ReadSign_LilOinks) = {
-    Call(DisablePlayerInput, TRUE)
+    Call(DisablePlayerInput, true)
     Call(N(CheckIfPaused))
     IfNe(LVar0, 0)
-        Call(ShowCoinCounter, TRUE)
+        Call(ShowCoinCounter, true)
         Call(ShowMessageAtScreenPos, MSG_Oinks_Paused, 160, 40)
-        Call(ShowCoinCounter, FALSE)
-        Call(DisablePlayerInput, FALSE)
+        Call(ShowCoinCounter, false)
+        Call(DisablePlayerInput, false)
     Else
         Call(ShowMessageAtScreenPos, MSG_Oinks_Multihatch, 160, 40)
         Call(ShowChoice, MSG_Oinks_Multihatch_Choice)
-        Call(DisablePlayerInput, FALSE)
+        Call(DisablePlayerInput, false)
         Call(EndSpeech)
         Switch(LVar0)
             CaseEq(0)
@@ -50,9 +50,9 @@ EvtScript N(EVS_ReadSign_LilOinks) = {
 };
 
 EvtScript N(EVS_OnInspect_StreetSign) = {
-    Call(DisablePlayerInput, TRUE)
+    Call(DisablePlayerInput, true)
     Call(ShowMessageAtScreenPos, MSG_Menus_0172, 160, 40)
-    Call(DisablePlayerInput, FALSE)
+    Call(DisablePlayerInput, false)
     Return
     End
 };
@@ -60,7 +60,7 @@ EvtScript N(EVS_OnInspect_StreetSign) = {
 EvtScript N(EVS_MakeEntities) = {
     Call(GetDemoState, LVar0)
     IfEq(LVar0, DEMO_STATE_NONE)
-        IfEq(GF_MAC03_BombedRock, FALSE)
+        IfEq(GF_MAC03_BombedRock, false)
             Call(MakeEntity, Ref(Entity_BombableRock), -200, 0, 0, 0, MAKE_ENTITY_END)
             Call(AssignScript, Ref(N(EVS_OnBlast_RailRock)))
         EndIf

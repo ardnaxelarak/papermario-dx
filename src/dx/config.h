@@ -7,7 +7,7 @@
 #define DX_MOD_NAME "Easy Lil Oinks"
 #define DX_MOD_VER_MAJOR 1 /// Increase this when you make breaking changes to the savefile format (like reordering items)
 #define DX_MOD_VER_MINOR 1 /// Increase this when adding new features or other enchancements
-#define DX_MOD_VER_PATCH 3 /// Increase this when fixing bugs
+#define DX_MOD_VER_PATCH 4 /// Increase this when fixing bugs
 
 /// Enables the debug menu.
 #define DX_DEBUG_MENU 0
